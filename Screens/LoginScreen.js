@@ -25,7 +25,7 @@ const initialState = {
   password: "",
 };
 
-export default function RegistrationScreen() {
+export default function LoginScreen() {
   const [isFocused, setIsFocused] = useState(false);
   const [isFocused2, setIsFocused2] = useState(false);
   const [isFocused3, setIsFocused3] = useState(false);
@@ -103,41 +103,17 @@ export default function RegistrationScreen() {
         >
           <KeyboardAvoidingView
             behavior={Platform.OS == "ios" ? "padding" : ""}
+            keyboardVerticalOffset={100}
           >
             <View
               style={{
                 ...styles.form,
-                marginBottom: isShowKeyboard ? -170 : 0,
+                marginBottom: isShowKeyboard ? -240 : 0,
                 width: dimensions,
               }}
             >
-              <View style={styles.avatarWrapper}>
-                <Image
-                  source={require("../assets/images/avatar0.png")}
-                  style={styles.avatarImage}
-                ></Image>
-                <TouchableOpacity activeOpacity={0.4}>
-                  <Image
-                    source={require("../assets/images/addButton.png")}
-                    style={styles.addAvatarBtn}
-                  ></Image>
-                </TouchableOpacity>
-              </View>
               <View>
-                <Text style={styles.formTitle}>Registration</Text>
-              </View>
-
-              <View>
-                <TextInput
-                  placeholder="Login"
-                  style={[styles.input, isFocused && styles.focusedInput]}
-                  onFocus={handleFocus}
-                  onBlur={handleBlur}
-                  value={state.login}
-                  onChangeText={(value) =>
-                    setstate((prevState) => ({ ...prevState, login: value }))
-                  }
-                />
+                <Text style={styles.formTitle}>Enter</Text>
               </View>
               <View>
                 <TextInput
@@ -171,17 +147,16 @@ export default function RegistrationScreen() {
                   )}
                 </TouchableOpacity>
               </View>
-
               <TouchableOpacity
                 activeOpacity={0.6}
                 style={styles.btn}
                 onPress={keyboardHide}
               >
-                <Text style={styles.btnTitle}>Register</Text>
+                <Text style={styles.btnTitle}>Enter</Text>
               </TouchableOpacity>
               <TouchableOpacity activeOpacity={0.6}>
                 <Text style={styles.textBottom}>
-                  Already have an account? <Text>Login</Text>
+                  Don't have an account? <Text>Register</Text>
                 </Text>
               </TouchableOpacity>
             </View>
@@ -201,43 +176,26 @@ const styles = StyleSheet.create({
     flex: 1,
     resizeMode: "cover",
     justifyContent: "flex-end",
-    // alignItems: "center",
-  },
-  avatarWrapper: {
     alignItems: "center",
   },
-  avatarImage: {
-    position: "absolute",
-    top: -60,
-    width: 120,
-    height: 120,
-    borderRadius: 16,
-  },
-  addAvatarBtn: {
-    position: "absolute",
-    width: 25,
-    height: 25,
-    left: 45,
-    top: 20,
-  },
+
   form: {
     width: "100%",
-    height: 549,
+    height: 489,
     backgroundColor: "#FFFFFF",
     borderTopRightRadius: 25,
     borderTopLeftRadius: 25,
   },
-
-  hideBtn: {
-    fontSize: 16,
-    lineHeight: 19,
-    textAlign: "center",
+  formTitle: {
+    fontWeight: 500,
+    fontSize: 30,
     fontFamily: "Roboto-Regular",
-    color: "#1B4371",
-    top: -50,
-    left: 83,
-    marginLeft: 145,
-    width: 120,
+    lineHeight: 35,
+    letterSpacing: 0.01,
+    color: "#212121",
+    marginTop: 32,
+    marginBottom: 33,
+    textAlign: "center",
   },
   input: {
     borderWidth: 1,
@@ -258,22 +216,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     color: "#212121",
   },
-  formTitle: {
-    fontWeight: 500,
-    fontSize: 30,
-    fontFamily: "Roboto-Regular",
-    lineHeight: 35,
-    letterSpacing: 0.01,
-    color: "#212121",
-    marginTop: 92,
-    marginBottom: 32,
-    textAlign: "center",
-  },
   btn: {
     backgroundColor: "#FF6C00",
     height: 51,
     borderRadius: 100,
-    marginTop: 27,
+    marginTop: 7,
     justifyContent: "center",
     alignItems: "center",
     marginHorizontal: 32,
@@ -291,5 +238,16 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "#1B4371",
     fontFamily: "Roboto-Regular",
+  },
+  hideBtn: {
+    fontSize: 16,
+    lineHeight: 19,
+    textAlign: "center",
+    fontFamily: "Roboto-Regular",
+    color: "#1B4371",
+    top: -50,
+    left: 83,
+    marginLeft: 145,
+    width: 120,
   },
 });
