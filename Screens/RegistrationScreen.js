@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   StyleSheet,
   TextInput,
@@ -14,19 +14,15 @@ import {
   Dimensions,
 } from "react-native";
 
-import * as Font from "expo-font";
-import { AppLoading } from "expo";
+import { useFonts } from "expo-font";
+import * as SplashScreen from "expo-splash-screen";
+
+SplashScreen.preventAutoHideAsync();
 
 const initialState = {
   login: "",
   email: "",
   password: "",
-};
-
-const loadFonts = async () => {
-  await Font.loadAsync({
-    "Roboto-Regular": require("../assets/fonts/Roboto-Regular.ttf"),
-  });
 };
 
 export default function RegistrationScreen() {
@@ -36,7 +32,6 @@ export default function RegistrationScreen() {
   const [hidePassword, setHidePassword] = useState(true);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [state, setstate] = useState(initialState);
-  const [isReady, setIsReady] = useState(false);
   const [dimensions, setDimensions] = useState(Dimensions.get("window").width);
 
   useEffect(() => {
@@ -86,30 +81,34 @@ export default function RegistrationScreen() {
     setHidePassword(!hidePassword);
   };
 
-  // if (!isReady) {
-  //   return (
-  //     <AppLoading
-  //       startAsync={loadFonts}
-  //       onFinish={() => setIsReady(true)}
-  //       onError={console.warn}
-  //     />
-  //   );
-  // }
+  const [fontsLoaded] = useFonts({
+    "Roboto-Regular": require("../assets/fonts/Roboto-Regular.ttf"),
+  });
 
+  const onLayoutRootView = useCallback(async () => {
+    if (fontsLoaded) {
+      await SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded) {
+    return null;
+  }
   return (
     <TouchableWithoutFeedback onPress={keyboardHide}>
-      <View style={styles.container}>
+      <View style={styles.container} onLayout={onLayoutRootView}>
         <ImageBackground
           style={styles.image}
           source={require("../assets/images/background.jpg")}
         >
           <KeyboardAvoidingView
             behavior={Platform.OS == "ios" ? "padding" : ""}
+            keyboardVerticalOffset={100}
           >
             <View
               style={{
                 ...styles.form,
-                marginBottom: isShowKeyboard ? 20 : 45,
+                marginBottom: isShowKeyboard ? 40 : 125,
                 width: dimensions,
               }}
             >
@@ -229,7 +228,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     borderTopRightRadius: 25,
     borderTopLeftRadius: 25,
-    marginBottom: 40,
+    marginBottom: 45,
   },
 
   hideBtn: {
