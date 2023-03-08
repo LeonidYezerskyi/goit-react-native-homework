@@ -169,9 +169,8 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 25,
   },
   formTitle: {
-    fontWeight: 500,
     fontSize: 30,
-    fontFamily: "Roboto-Regular",
+    fontFamily: "Roboto-Medium",
     lineHeight: 35,
     letterSpacing: 0.01,
     color: "#212121",
@@ -219,7 +218,7 @@ const styles = StyleSheet.create({
     lineHeight: 19,
     textAlign: "center",
     color: "#1B4371",
-    fontFamily: "RobotoRegular",
+    fontFamily: "Roboto-Regular",
   },
   hideBtn: {
     fontSize: 16,

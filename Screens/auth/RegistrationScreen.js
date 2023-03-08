@@ -35,9 +35,9 @@ export default function RegistrationScreen({ navigation }) {
 
       setDimensions(width);
     };
-    Dimensions.addEventListener("change", onChange);
+    const listener = Dimensions.addEventListener("change", onChange);
     return () => {
-      Dimensions.removeEventListener("change", onChange);
+      listener.remove();
     };
   }, []);
 
@@ -252,9 +252,8 @@ const styles = StyleSheet.create({
     color: "#212121",
   },
   formTitle: {
-    fontWeight: 500,
     fontSize: 30,
-    fontFamily: "Roboto-Regular",
+    fontFamily: "Roboto-Medium",
     lineHeight: 35,
     letterSpacing: 0.01,
     color: "#212121",

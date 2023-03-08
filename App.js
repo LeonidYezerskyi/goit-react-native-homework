@@ -31,6 +31,7 @@ export default function App() {
 
   const [fontsLoaded] = useFonts({
     "Roboto-Regular": require("./assets/fonts/Roboto-Regular.ttf"),
+    "Roboto-Medium": require("./assets/fonts/Roboto-Medium.ttf"),
   });
 
   const onLayoutRootView = useCallback(async () => {
@@ -43,7 +44,7 @@ export default function App() {
     return null;
   }
   return (
-    <SafeAreaView onLayout={onLayoutRootView}>
+    <SafeAreaView onLayout={onLayoutRootView} style={{ flex: 1 }}>
       <NavigationContainer>
         <MainStack.Navigator initialRouteName="Registration">
           <MainStack.Screen
