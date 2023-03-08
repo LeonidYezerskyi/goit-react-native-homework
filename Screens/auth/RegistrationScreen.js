@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   TextInput,
@@ -14,18 +14,13 @@ import {
   Dimensions,
 } from "react-native";
 
-import { useFonts } from "expo-font";
-import * as SplashScreen from "expo-splash-screen";
-
-SplashScreen.preventAutoHideAsync();
-
 const initialState = {
   login: "",
   email: "",
   password: "",
 };
 
-export default function RegistrationScreen() {
+export default function RegistrationScreen({ navigation }) {
   const [isFocused, setIsFocused] = useState(false);
   const [isFocused2, setIsFocused2] = useState(false);
   const [isFocused3, setIsFocused3] = useState(false);
@@ -89,25 +84,12 @@ export default function RegistrationScreen() {
     setHidePassword(!hidePassword);
   };
 
-  const [fontsLoaded] = useFonts({
-    "Roboto-Regular": require("../assets/fonts/Roboto-Regular.ttf"),
-  });
-
-  const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded) {
-      await SplashScreen.hideAsync();
-    }
-  }, [fontsLoaded]);
-
-  if (!fontsLoaded) {
-    return null;
-  }
   return (
     <TouchableWithoutFeedback onPress={keyboardHide2}>
-      <View style={styles.container} onLayout={onLayoutRootView}>
+      <View style={styles.container}>
         <ImageBackground
           style={styles.image}
-          source={require("../assets/images/background.jpg")}
+          source={require("../../assets/images/background.jpg")}
         >
           <KeyboardAvoidingView
             behavior={Platform.OS == "ios" ? "padding" : ""}
@@ -121,12 +103,12 @@ export default function RegistrationScreen() {
             >
               <View style={styles.avatarWrapper}>
                 <Image
-                  source={require("../assets/images/avatar0.png")}
+                  source={require("../../assets/images/avatar0.png")}
                   style={styles.avatarImage}
                 ></Image>
                 <TouchableOpacity activeOpacity={0.4}>
                   <Image
-                    source={require("../assets/images/addButton.png")}
+                    source={require("../../assets/images/addButton.png")}
                     style={styles.addAvatarBtn}
                   ></Image>
                 </TouchableOpacity>
@@ -189,7 +171,10 @@ export default function RegistrationScreen() {
               </TouchableOpacity>
               <TouchableOpacity activeOpacity={0.6}>
                 <Text style={styles.textBottom}>
-                  Already have an account? <Text>Login</Text>
+                  Already have an account?{" "}
+                  <Text onPress={() => navigation.navigate("Login")}>
+                    Login
+                  </Text>
                 </Text>
               </TouchableOpacity>
             </View>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   TextInput,
@@ -6,7 +6,6 @@ import {
   Text,
   ImageBackground,
   TouchableOpacity,
-  Image,
   KeyboardAvoidingView,
   Keyboard,
   Platform,
@@ -14,21 +13,15 @@ import {
   Dimensions,
 } from "react-native";
 
-import { useFonts } from "expo-font";
-import * as SplashScreen from "expo-splash-screen";
-
-SplashScreen.preventAutoHideAsync();
-
 const initialState = {
   login: "",
   email: "",
   password: "",
 };
 
-export default function LoginScreen() {
+export default function LoginScreen({ navigation }) {
   const [isFocused, setIsFocused] = useState(false);
   const [isFocused2, setIsFocused2] = useState(false);
-  const [isFocused3, setIsFocused3] = useState(false);
   const [hidePassword, setHidePassword] = useState(true);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [state, setstate] = useState(initialState);
@@ -53,6 +46,11 @@ export default function LoginScreen() {
     setstate(initialState);
   };
 
+  const keyboardHide2 = () => {
+    setIsShowKeyboard(false);
+    Keyboard.dismiss();
+  };
+
   const handleFocus = () => {
     setIsFocused(true);
     setIsShowKeyboard(true);
@@ -62,44 +60,25 @@ export default function LoginScreen() {
     setIsShowKeyboard(true);
   };
 
-  const handleFocus3 = () => {
-    setIsFocused3(true);
-    setIsShowKeyboard(true);
-  };
-
   const handleBlur = () => {
     setIsFocused(false);
+    setIsShowKeyboard(false);
   };
   const handleBlur2 = () => {
     setIsFocused2(false);
-  };
-  const handleBlur3 = () => {
-    setIsFocused3(false);
+    setIsShowKeyboard(false);
   };
 
   const togglePasswordVisibility = () => {
     setHidePassword(!hidePassword);
   };
 
-  const [fontsLoaded] = useFonts({
-    "Roboto-Regular": require("../assets/fonts/Roboto-Regular.ttf"),
-  });
-
-  const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded) {
-      await SplashScreen.hideAsync();
-    }
-  }, [fontsLoaded]);
-
-  if (!fontsLoaded) {
-    return null;
-  }
   return (
-    <TouchableWithoutFeedback onPress={keyboardHide}>
-      <View style={styles.container} onLayout={onLayoutRootView}>
+    <TouchableWithoutFeedback onPress={keyboardHide2}>
+      <View style={styles.container}>
         <ImageBackground
           style={styles.image}
-          source={require("../assets/images/background.jpg")}
+          source={require("../../assets/images/background.jpg")}
         >
           <KeyboardAvoidingView
             behavior={Platform.OS == "ios" ? "padding" : ""}
@@ -118,9 +97,9 @@ export default function LoginScreen() {
               <View>
                 <TextInput
                   placeholder="Email address"
-                  style={[styles.input, isFocused2 && styles.focusedInput]}
-                  onFocus={handleFocus2}
-                  onBlur={handleBlur2}
+                  style={[styles.input, isFocused && styles.focusedInput]}
+                  onFocus={handleFocus}
+                  onBlur={handleBlur}
                   value={state.email}
                   onChangeText={(value) =>
                     setstate((prevState) => ({ ...prevState, email: value }))
@@ -130,10 +109,10 @@ export default function LoginScreen() {
               <View style={styles.inputContainer}>
                 <TextInput
                   placeholder="Password"
-                  style={[styles.input, isFocused3 && styles.focusedInput]}
+                  style={[styles.input, isFocused2 && styles.focusedInput]}
                   secureTextEntry={hidePassword}
-                  onFocus={handleFocus3}
-                  onBlur={handleBlur3}
+                  onFocus={handleFocus2}
+                  onBlur={handleBlur2}
                   value={state.password}
                   onChangeText={(value) =>
                     setstate((prevState) => ({ ...prevState, password: value }))
@@ -156,7 +135,10 @@ export default function LoginScreen() {
               </TouchableOpacity>
               <TouchableOpacity activeOpacity={0.6}>
                 <Text style={styles.textBottom}>
-                  Don't have an account? <Text>Register</Text>
+                  Don't have an account?{" "}
+                  <Text onPress={() => navigation.navigate("Registration")}>
+                    Register
+                  </Text>
                 </Text>
               </TouchableOpacity>
             </View>
@@ -237,7 +219,7 @@ const styles = StyleSheet.create({
     lineHeight: 19,
     textAlign: "center",
     color: "#1B4371",
-    fontFamily: "Roboto-Regular",
+    fontFamily: "RobotoRegular",
   },
   hideBtn: {
     fontSize: 16,
