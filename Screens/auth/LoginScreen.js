@@ -14,7 +14,6 @@ import {
 } from "react-native";
 
 const initialState = {
-  login: "",
   email: "",
   password: "",
 };
@@ -131,7 +130,7 @@ export default function LoginScreen({ navigation }) {
                 style={styles.btn}
                 onPress={keyboardHide}
               >
-                <Text style={styles.btnTitle}>Enter</Text>
+                <Text style={styles.btnTitle}>Log In</Text>
               </TouchableOpacity>
               <TouchableOpacity activeOpacity={0.6}>
                 <Text style={styles.textBottom}>
