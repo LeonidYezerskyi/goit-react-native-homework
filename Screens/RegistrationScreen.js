@@ -53,6 +53,11 @@ export default function RegistrationScreen() {
     setstate(initialState);
   };
 
+  const keyboardHide2 = () => {
+    setIsShowKeyboard(false);
+    Keyboard.dismiss();
+  };
+
   const handleFocus = () => {
     setIsFocused(true);
     setIsShowKeyboard(true);
@@ -69,12 +74,15 @@ export default function RegistrationScreen() {
 
   const handleBlur = () => {
     setIsFocused(false);
+    setIsShowKeyboard(false);
   };
   const handleBlur2 = () => {
     setIsFocused2(false);
+    setIsShowKeyboard(false);
   };
   const handleBlur3 = () => {
     setIsFocused3(false);
+    setIsShowKeyboard(false);
   };
 
   const togglePasswordVisibility = () => {
@@ -95,7 +103,7 @@ export default function RegistrationScreen() {
     return null;
   }
   return (
-    <TouchableWithoutFeedback onPress={keyboardHide}>
+    <TouchableWithoutFeedback onPress={keyboardHide2}>
       <View style={styles.container} onLayout={onLayoutRootView}>
         <ImageBackground
           style={styles.image}
