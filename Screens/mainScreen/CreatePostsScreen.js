@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Text,
   View,
@@ -7,21 +7,47 @@ import {
   Image,
   TextInput,
 } from "react-native";
+import { Camera } from "expo-camera";
 
-const CreatePostsScreen = () => {
+const CreatePostsScreen = ({ navigation }) => {
+  const [camera, setCamera] = useState(null);
+  const [photo, setPhoto] = useState(null);
+
+  const takePhoto = async () => {
+    const photo = await camera.takePictureAsync();
+    setPhoto(photo.uri);
+  };
+
+  const sendPhoto = () => {
+    navigation.navigate("Posts", { photo });
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.ImageWrapper}>
-        <TouchableOpacity activeOpacity={0.4}>
-          <Image
-            style={{ width: 343, height: 240 }}
-            source={require("../../assets/images/contentBlock.png")}
-          />
-          <Image
-            source={require("../../assets/images/addImage.png")}
-            style={styles.addImage}
-          />
-        </TouchableOpacity>
+        <Camera style={styles.cameraContainer} ref={setCamera}>
+          {photo && (
+            <View style={styles.takePhotoContainer}>
+              <Image
+                source={{ uri: photo }}
+                style={{ width: 343, height: 240 }}
+              />
+            </View>
+          )}
+          <TouchableOpacity onPress={takePhoto} activeOpacity={0.4}>
+            {!photo ? (
+              <Image
+                source={require("../../assets/images/addImage.png")}
+                style={styles.addImage}
+              />
+            ) : (
+              <Image
+                source={require("../../assets/images/addImageMore.png")}
+                style={styles.addImage}
+              />
+            )}
+          </TouchableOpacity>
+        </Camera>
         <View>
           <Text style={styles.textAddPhoto}>Upload image</Text>
         </View>
@@ -40,8 +66,24 @@ const CreatePostsScreen = () => {
             style={styles.mapPin}
           />
         </View>
-        <TouchableOpacity activeOpacity={0.6} style={styles.btnPublish}>
-          <Text style={styles.btnPublishText}>Publish</Text>
+        <TouchableOpacity
+          onPress={photo ? sendPhoto : () => {}}
+          activeOpacity={0.6}
+          style={[
+            !photo
+              ? styles.btnPublish
+              : [styles.btnPublish, { backgroundColor: "#FF6C00" }],
+          ]}
+        >
+          <Text
+            style={[
+              !photo
+                ? styles.btnPublishText
+                : [styles.btnPublishText, { color: "#FFFFFF" }],
+            ]}
+          >
+            Publish
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity activeOpacity={0.6} style={styles.btnDelete}>
           <Image
@@ -62,14 +104,22 @@ const styles = StyleSheet.create({
     borderTopColor: "#808080",
     borderTopWidth: 1,
   },
+  cameraContainer: {
+    width: 343,
+    height: 240,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  takePhotoContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    position: "absolute",
+    borderColor: "#fff",
+    borderWidth: 1,
+  },
   ImageWrapper: {
     marginTop: 32,
     marginHorizontal: 32,
-  },
-  addImage: {
-    position: "absolute",
-    marginHorizontal: 140,
-    marginTop: 90,
   },
   textAddPhoto: {
     marginTop: 8,
@@ -95,10 +145,13 @@ const styles = StyleSheet.create({
     textAlign: "left",
     fontSize: 16,
     lineHeight: 19,
-    color: "#BDBDBD",
+    color: "#212121",
+    fontFamily: "Roboto-Medium",
+  },
+  input2: {
+    paddingLeft: 24,
     fontFamily: "Roboto-Regular",
   },
-  input2: { paddingLeft: 24 },
   mapPin: {
     position: "absolute",
     bottom: 28,
