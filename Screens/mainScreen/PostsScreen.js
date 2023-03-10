@@ -1,5 +1,12 @@
 import React from "react";
-import { Text, View, StyleSheet, Image, TouchableOpacity } from "react-native";
+import {
+  Text,
+  View,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
 import { EvilIcons } from "@expo/vector-icons";
 
 const PostsScreen = ({ navigation }) => {
@@ -15,39 +22,77 @@ const PostsScreen = ({ navigation }) => {
           <Text style={styles.userEmail}>email@example.com</Text>
         </View>
       </View>
-      <View style={styles.postsWrapper}>
-        <View style={{ alignItems: "center" }}>
-          <Image
-            style={{
-              width: 343,
-              height: 240,
-            }}
-            source={require("../../assets/images/forest.jpg")}
-          />
-        </View>
-        <View style={styles.postMainInfo}>
-          <Text style={styles.postName}>Forest</Text>
-          <View style={styles.postInfo}>
-            <View style={{ flexDirection: "row", marginLeft: -7 }}>
-              <TouchableOpacity
-                activeOpacity={0.4}
-                onPress={() => navigation.navigate("Comments")}
-              >
-                <EvilIcons name="comment" size={24} color="#BDBDBD" />
-              </TouchableOpacity>
-              <Text style={styles.commentsNumber}>0</Text>
-            </View>
-            <View style={{ flexDirection: "row" }}>
-              <TouchableOpacity activeOpacity={0.4}>
-                <EvilIcons name="location" size={24} color="#BDBDBD" />
-              </TouchableOpacity>
-              <Text style={styles.postLocation}>
-                Ivano-Frankivs'k Region, Ukraine
-              </Text>
+      <ScrollView>
+        <View style={styles.postsWrapper}>
+          <View style={{ alignItems: "center" }}>
+            <Image
+              style={{
+                width: 343,
+                height: 240,
+              }}
+              source={require("../../assets/images/forest.jpg")}
+            />
+          </View>
+          <View style={styles.postMainInfo}>
+            <Text style={styles.postName}>Forest</Text>
+            <View style={styles.postInfo}>
+              <View style={{ flexDirection: "row", marginLeft: -7 }}>
+                <TouchableOpacity
+                  activeOpacity={0.4}
+                  onPress={() => navigation.navigate("Comments")}
+                >
+                  <EvilIcons name="comment" size={24} color="#BDBDBD" />
+                </TouchableOpacity>
+                <Text style={styles.commentsNumber}>0</Text>
+              </View>
+              <View style={{ flexDirection: "row" }}>
+                <TouchableOpacity
+                  activeOpacity={0.4}
+                  onPress={() => navigation.navigate("Map")}
+                >
+                  <EvilIcons name="location" size={24} color="#BDBDBD" />
+                </TouchableOpacity>
+                <Text style={styles.postLocation}>
+                  Ivano-Frankivs'k Region, Ukraine
+                </Text>
+              </View>
             </View>
           </View>
         </View>
-      </View>
+        <View style={styles.postsWrapper}>
+          <View style={{ alignItems: "center" }}>
+            <Image
+              style={{
+                width: 343,
+                height: 240,
+              }}
+              source={require("../../assets/images/forest.jpg")}
+            />
+          </View>
+          <View style={styles.postMainInfo}>
+            <Text style={styles.postName}>Forest</Text>
+            <View style={styles.postInfo}>
+              <View style={{ flexDirection: "row", marginLeft: -7 }}>
+                <TouchableOpacity
+                  activeOpacity={0.4}
+                  onPress={() => navigation.navigate("Comments")}
+                >
+                  <EvilIcons name="comment" size={24} color="#BDBDBD" />
+                </TouchableOpacity>
+                <Text style={styles.commentsNumber}>0</Text>
+              </View>
+              <View style={{ flexDirection: "row" }}>
+                <TouchableOpacity activeOpacity={0.4}>
+                  <EvilIcons name="location" size={24} color="#BDBDBD" />
+                </TouchableOpacity>
+                <Text style={styles.postLocation}>
+                  Ivano-Frankivs'k Region, Ukraine
+                </Text>
+              </View>
+            </View>
+          </View>
+        </View>
+      </ScrollView>
     </View>
   );
 };
@@ -62,7 +107,6 @@ const styles = StyleSheet.create({
   userWrapper: {
     marginTop: 32,
     marginLeft: 16,
-    marginBottom: 32,
     flexDirection: "row",
   },
   userInfo: { marginLeft: 8 },
@@ -80,6 +124,7 @@ const styles = StyleSheet.create({
   },
   postsWrapper: {
     marginHorizontal: 32,
+    marginTop: 32,
     alignItems: "center",
   },
   postInfo: {

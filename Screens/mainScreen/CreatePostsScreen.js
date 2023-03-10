@@ -7,7 +7,6 @@ import {
   Image,
   TextInput,
 } from "react-native";
-import { EvilIcons } from "@expo/vector-icons";
 
 const CreatePostsScreen = () => {
   return (
@@ -29,45 +28,22 @@ const CreatePostsScreen = () => {
       </View>
       <View style={styles.form}>
         <View>
-          <TextInput
-            placeholder="Name..."
-            style={styles.input}
-            // onFocus={handleFocus2}
-            // onBlur={handleBlur2}
-            // value={state.email}
-            // onChangeText={(value) =>
-            //   setstate((prevState) => ({ ...prevState, email: value }))
-            // }
-          />
+          <TextInput placeholder="Name..." style={styles.input} />
         </View>
         <View>
           <TextInput
             placeholder="Location"
             style={[styles.input, styles.input2]}
-            // onFocus={handleFocus2}
-            // onBlur={handleBlur2}
-            // value={state.email}
-            // onChangeText={(value) =>
-            //   setstate((prevState) => ({ ...prevState, email: value }))
-            // }
           />
           <Image
             source={require("../../assets/images/mapPin.png")}
             style={styles.mapPin}
           />
         </View>
-        <TouchableOpacity
-          activeOpacity={0.6}
-          style={styles.btnPublish}
-          // onPress={keyboardHide}
-        >
+        <TouchableOpacity activeOpacity={0.6} style={styles.btnPublish}>
           <Text style={styles.btnPublishText}>Publish</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          activeOpacity={0.6}
-          style={styles.btnDelete}
-          // onPress={keyboardHide}
-        >
+        <TouchableOpacity activeOpacity={0.6} style={styles.btnDelete}>
           <Image
             source={require("../../assets/images/trash.png")}
             style={{ width: 70, height: 40 }}

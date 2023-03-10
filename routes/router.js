@@ -35,7 +35,18 @@ export const useRoute = (isAuth) => {
         component={HomeScreen}
       />
       <MainStack.Screen name="Map" component={MapScreen} />
-      <MainStack.Screen name="Comments" component={CommentsScreen} />
+      <MainStack.Screen
+        options={{
+          title: "Comments",
+          headerTitleAlign: "center",
+          headerTitleStyle: {
+            fontSize: 17,
+            fontWeight: "bold",
+          },
+        }}
+        name="Comments"
+        component={CommentsScreen}
+      />
     </MainStack.Navigator>
   );
 };

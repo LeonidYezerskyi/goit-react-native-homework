@@ -86,6 +86,7 @@ const BottomTabNav = ({ navigation }) => {
       />
       <MainTab.Screen
         options={{
+          headerShown: false,
           tabBarIcon: ({ focused, size, color }) => (
             <Ionicons name="person-outline" size={24} color={color} />
           ),
