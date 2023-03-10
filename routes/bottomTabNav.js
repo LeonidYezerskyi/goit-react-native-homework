@@ -1,37 +1,22 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { createStackNavigator } from "@react-navigation/stack";
-import { Ionicons, FontAwesome } from "@expo/vector-icons";
-import LoginScreen from "./Screens/auth/LoginScreen";
-import RegistrationScreen from "./Screens/auth/RegistrationScreen";
-import PostsScreen from "./Screens/mainScreen/PostsScreen";
-import CreatePostsScreen from "./Screens/mainScreen/CreatePostsScreen";
-import ProfileScreen from "./Screens/mainScreen/ProfileScreen";
+import {
+  Ionicons,
+  FontAwesome,
+  MaterialIcons,
+  AntDesign,
+} from "@expo/vector-icons";
+import { TouchableOpacity, View } from "react-native";
+import PostsScreen from "../Screens/mainScreen/PostsScreen";
+import CreatePostsScreen from "../Screens/mainScreen/CreatePostsScreen";
+import ProfileScreen from "../Screens/mainScreen/ProfileScreen";
 
-const AuthStack = createStackNavigator();
 const MainTab = createBottomTabNavigator();
 
-export const useRoute = (isAuth) => {
-  if (!isAuth) {
-    return (
-      <AuthStack.Navigator initialRouteName="Registration">
-        <AuthStack.Screen
-          options={{ headerShown: false }}
-          name="Login"
-          component={LoginScreen}
-        />
-        <AuthStack.Screen
-          options={{ headerShown: false }}
-          name="Registration"
-          component={RegistrationScreen}
-        />
-        {/* <AuthStack.Screen name="Home" component={Home} /> */}
-      </AuthStack.Navigator>
-    );
-  }
-
+const BottomTabNav = ({ navigation }) => {
   return (
     <MainTab.Navigator
+      initialRouteName="Posts"
       screenOptions={{
         tabBarShowLabel: false,
         tabBarActiveTintColor: "#FFFFFF",
@@ -48,7 +33,8 @@ export const useRoute = (isAuth) => {
           {
             backgroundColor: "#FFFFFF",
             height: 83,
-            borderTopColor: "grey",
+            borderTopColor: "#808080",
+            borderTopWidth: 1,
             alignItems: "center",
           },
           null,
@@ -57,6 +43,19 @@ export const useRoute = (isAuth) => {
     >
       <MainTab.Screen
         options={{
+          title: "Posts",
+          headerTitleAlign: "center",
+          headerTitleStyle: {
+            fontSize: 17,
+            fontWeight: "bold",
+          },
+          headerRight: () => (
+            <TouchableOpacity activeOpacity={0.7} onPress={() => {}}>
+              <View style={{ paddingRight: 10 }}>
+                <MaterialIcons name="logout" size={24} color="#BDBDBD" />
+              </View>
+            </TouchableOpacity>
+          ),
           tabBarIcon: ({ focused, size, color }) => (
             <FontAwesome name="list-ul" size={24} color={color} />
           ),
@@ -66,8 +65,20 @@ export const useRoute = (isAuth) => {
       />
       <MainTab.Screen
         options={{
+          title: "Create Post",
+          headerTitleAlign: "center",
+          headerTitleStyle: {
+            fontSize: 17,
+            fontWeight: "bold",
+          },
+          tabBarStyle: { display: "none" },
           tabBarIcon: ({ focused, size, color }) => (
             <Ionicons name="add" size={24} color={color} />
+          ),
+          headerLeft: ({ focused, size, color }) => (
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <AntDesign name="arrowleft" size={24} color="black" />
+            </TouchableOpacity>
           ),
         }}
         name="CreatePosts"
@@ -85,3 +96,5 @@ export const useRoute = (isAuth) => {
     </MainTab.Navigator>
   );
 };
+
+export default BottomTabNav;
