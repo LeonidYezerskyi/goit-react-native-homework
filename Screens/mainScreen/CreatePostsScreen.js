@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
+  Alert,
 } from "react-native";
 import { Camera } from "expo-camera";
 import * as Location from "expo-location";
@@ -16,12 +17,12 @@ const CreatePostsScreen = ({ navigation }) => {
   const [location, setLocation] = useState(null);
 
   useEffect(() => {
-    async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
+    (async () => {
+      const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
-        console.log("Permission to access location was denied");
+        Alert.alert("Permission to access location was denied");
       }
-    };
+    })();
   }, []);
 
   const takePhoto = async () => {
@@ -41,7 +42,6 @@ const CreatePostsScreen = ({ navigation }) => {
   const publishPost = () => {
     getLocation();
     navigation.navigate("DefaultScreen", { photo, location });
-    setPhoto(null);
   };
 
   return (
