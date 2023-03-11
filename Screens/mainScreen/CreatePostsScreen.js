@@ -23,6 +23,12 @@ const CreatePostsScreen = ({ navigation }) => {
         Alert.alert("Permission to access location was denied");
       }
     })();
+    (async () => {
+      const { status } = await Camera.requestCameraPermissionsAsync();
+      if (status !== "granted") {
+        Alert.alert("Permission to access camera was denied");
+      }
+    })();
   }, []);
 
   const takePhoto = async () => {
