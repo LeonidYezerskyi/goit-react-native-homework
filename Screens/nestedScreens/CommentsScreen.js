@@ -21,14 +21,14 @@ const CommentsScreen = () => {
         <View style={{ alignItems: "center" }}>
           <Image
             style={styles.image}
-            source={require("../assets/images/forest.jpg")}
+            source={require("../../assets/images/forest.jpg")}
           />
         </View>
         <View style={styles.commentsWrapper}>
           <View style={styles.userComment}>
             <Image
               style={styles.userImage}
-              source={require("../assets/images/userPhotoComment.jpg")}
+              source={require("../../assets/images/userPhotoComment.jpg")}
             />
             <View style={styles.commentContent}>
               <Text style={styles.commentText}>
@@ -48,13 +48,13 @@ const CommentsScreen = () => {
             </View>
             <Image
               style={styles.userImage}
-              source={require("../assets/images/userPhotoComment2.jpg")}
+              source={require("../../assets/images/userPhotoComment2.jpg")}
             />
           </View>
           <View style={styles.userComment}>
             <Image
               style={styles.userImage}
-              source={require("../assets/images/userPhotoComment.jpg")}
+              source={require("../../assets/images/userPhotoComment.jpg")}
             />
             <View style={styles.commentContent}>
               <Text style={styles.commentText}>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Text,
   View,
@@ -8,18 +8,40 @@ import {
   TextInput,
 } from "react-native";
 import { Camera } from "expo-camera";
+import * as Location from "expo-location";
 
 const CreatePostsScreen = ({ navigation }) => {
   const [camera, setCamera] = useState(null);
   const [photo, setPhoto] = useState(null);
+  const [location, setLocation] = useState(null);
+
+  useEffect(() => {
+    async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        console.log("Permission to access location was denied");
+      }
+    };
+  }, []);
 
   const takePhoto = async () => {
     const photo = await camera.takePictureAsync();
     setPhoto(photo.uri);
   };
 
-  const sendPhoto = () => {
-    navigation.navigate("Posts", { photo });
+  const getLocation = async () => {
+    const location = await Location.getCurrentPositionAsync();
+    const coords = {
+      latitude: location.coords.latitude,
+      longitude: location.coords.longitude,
+    };
+    setLocation(coords);
+  };
+
+  const publishPost = () => {
+    getLocation();
+    navigation.navigate("DefaultScreen", { photo, location });
+    setPhoto(null);
   };
 
   return (
@@ -67,7 +89,7 @@ const CreatePostsScreen = ({ navigation }) => {
           />
         </View>
         <TouchableOpacity
-          onPress={photo ? sendPhoto : () => {}}
+          onPress={photo ? publishPost : () => {}}
           activeOpacity={0.6}
           style={[
             !photo

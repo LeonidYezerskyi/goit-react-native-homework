@@ -1,137 +1,61 @@
-import React, { useState, useEffect } from "react";
-import {
-  Text,
-  View,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-  FlatList,
-} from "react-native";
-import { EvilIcons } from "@expo/vector-icons";
+import React from "react";
+import { createStackNavigator } from "@react-navigation/stack";
+import DefaultScreenPosts from "../nestedScreens/DefaultScreenPosts";
+import CommentsScreen from "../nestedScreens/CommentsScreen";
+import MapScreen from "../nestedScreens/MapScreen";
+import { TouchableOpacity, View } from "react-native";
+import { MaterialIcons } from "@expo/vector-icons";
 
-const PostsScreen = ({ navigation, route }) => {
-  const [posts, setPosts] = useState([]);
+const NestedScreen = createStackNavigator();
 
-  useEffect(() => {
-    if (route.params) {
-      setPosts((prevState) => [...prevState, route.params]);
-    }
-  }, [route.params]);
-
+const PostsScreen = () => {
   return (
-    <View style={styles.container}>
-      <View style={styles.userWrapper}>
-        <Image
-          style={{ width: 60, height: 60 }}
-          source={require("../../assets/images/user.jpg")}
-        />
-        <View style={styles.userInfo}>
-          <Text style={styles.userName}>Natali Romanova</Text>
-          <Text style={styles.userEmail}>email@example.com</Text>
-        </View>
-      </View>
-      <FlatList
-        data={posts}
-        keyExtractor={(item, indx) => indx.toString()}
-        renderItem={({ item }) => (
-          <View>
-            <View style={styles.postsWrapper}>
-              <View style={{ alignItems: "center" }}>
-                <Image
-                  source={{ uri: item.photo }}
-                  style={{ width: 343, height: 240 }}
-                />
+    <NestedScreen.Navigator>
+      <NestedScreen.Screen
+        name="DefaultScreen"
+        options={{
+          title: "Posts",
+          headerTitleAlign: "center",
+          headerTitleStyle: {
+            fontSize: 17,
+            fontWeight: "bold",
+          },
+          headerRight: () => (
+            <TouchableOpacity activeOpacity={0.7} onPress={() => {}}>
+              <View style={{ paddingRight: 10 }}>
+                <MaterialIcons name="logout" size={24} color="#BDBDBD" />
               </View>
-              <View style={styles.postMainInfo}>
-                <Text style={styles.postName}>Forest</Text>
-                <View style={styles.postInfo}>
-                  <View style={{ flexDirection: "row", marginLeft: -7 }}>
-                    <TouchableOpacity
-                      activeOpacity={0.4}
-                      onPress={() => navigation.navigate("Comments")}
-                    >
-                      <EvilIcons name="comment" size={24} color="#BDBDBD" />
-                    </TouchableOpacity>
-                    <Text style={styles.commentsNumber}>0</Text>
-                  </View>
-                  <View style={{ flexDirection: "row" }}>
-                    <TouchableOpacity
-                      activeOpacity={0.4}
-                      onPress={() => navigation.navigate("Map")}
-                    >
-                      <EvilIcons name="location" size={24} color="#BDBDBD" />
-                    </TouchableOpacity>
-                    <Text style={styles.postLocation}>
-                      Ivano-Frankivs'k Region, Ukraine
-                    </Text>
-                  </View>
-                </View>
-              </View>
-            </View>
-          </View>
-        )}
+            </TouchableOpacity>
+          ),
+        }}
+        component={DefaultScreenPosts}
       />
-    </View>
+      <NestedScreen.Screen
+        options={{
+          title: "Comments",
+          headerTitleAlign: "center",
+          headerTitleStyle: {
+            fontSize: 17,
+            fontWeight: "bold",
+          },
+        }}
+        name="Comments"
+        component={CommentsScreen}
+      />
+      <NestedScreen.Screen
+        options={{
+          title: "Map",
+          headerTitleAlign: "center",
+          headerTitleStyle: {
+            fontSize: 17,
+            fontWeight: "bold",
+          },
+        }}
+        name="Map"
+        component={MapScreen}
+      />
+    </NestedScreen.Navigator>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#FFFFFF",
-    borderTopColor: "#808080",
-    borderTopWidth: 1,
-  },
-  userWrapper: {
-    marginTop: 32,
-    marginLeft: 16,
-    flexDirection: "row",
-  },
-  userInfo: { marginLeft: 8 },
-  userName: {
-    fontSize: 13,
-    fontFamily: "Roboto-Bold",
-    lineHeight: 15,
-    color: "#212121",
-  },
-  userEmail: {
-    fontSize: 11,
-    fontFamily: "Roboto-Regular",
-    lineHeight: 13,
-    color: "#212121",
-  },
-  postsWrapper: {
-    marginHorizontal: 32,
-    marginTop: 32,
-    alignItems: "center",
-  },
-  postInfo: {
-    flexDirection: "row",
-    marginHorizontal: 32,
-  },
-  commentsNumber: {
-    marginRight: 50,
-    fontFamily: "Roboto-Regular",
-    fontSize: 16,
-    lineHeight: 19,
-    color: "#BDBDBD",
-  },
-  postName: {
-    fontFamily: "Roboto-Medium",
-    fontSize: 16,
-    lineHeight: 19,
-    color: "#212121",
-    marginLeft: 28,
-    marginTop: 8,
-    marginBottom: 8,
-  },
-  postLocation: {
-    fontFamily: "Roboto-Regular",
-    fontSize: 16,
-    lineHeight: 19,
-    textDecorationLine: "underline",
-    color: "#212121",
-  },
-});
 
 export default PostsScreen;

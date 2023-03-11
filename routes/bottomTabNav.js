@@ -1,12 +1,7 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import {
-  Ionicons,
-  FontAwesome,
-  MaterialIcons,
-  AntDesign,
-} from "@expo/vector-icons";
-import { TouchableOpacity, View } from "react-native";
+import { Ionicons, FontAwesome, AntDesign } from "@expo/vector-icons";
+import { TouchableOpacity } from "react-native";
 import PostsScreen from "../Screens/mainScreen/PostsScreen";
 import CreatePostsScreen from "../Screens/mainScreen/CreatePostsScreen";
 import ProfileScreen from "../Screens/mainScreen/ProfileScreen";
@@ -43,19 +38,7 @@ const BottomTabNav = ({ navigation }) => {
     >
       <MainTab.Screen
         options={{
-          title: "Posts",
-          headerTitleAlign: "center",
-          headerTitleStyle: {
-            fontSize: 17,
-            fontWeight: "bold",
-          },
-          headerRight: () => (
-            <TouchableOpacity activeOpacity={0.7} onPress={() => {}}>
-              <View style={{ paddingRight: 10 }}>
-                <MaterialIcons name="logout" size={24} color="#BDBDBD" />
-              </View>
-            </TouchableOpacity>
-          ),
+          headerShown: false,
           tabBarIcon: ({ focused, size, color }) => (
             <FontAwesome name="list-ul" size={24} color={color} />
           ),
@@ -76,7 +59,10 @@ const BottomTabNav = ({ navigation }) => {
             <Ionicons name="add" size={24} color={color} />
           ),
           headerLeft: ({ focused, size, color }) => (
-            <TouchableOpacity onPress={() => navigation.goBack()}>
+            <TouchableOpacity
+              style={{ marginLeft: 16 }}
+              onPress={() => navigation.goBack()}
+            >
               <AntDesign name="arrowleft" size={24} color="black" />
             </TouchableOpacity>
           ),
