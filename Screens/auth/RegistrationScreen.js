@@ -13,6 +13,8 @@ import {
   TouchableWithoutFeedback,
   Dimensions,
 } from "react-native";
+import { useDispatch } from "react-redux";
+import { authSignUpUser } from "../../redux/auth/authOperations";
 
 const initialState = {
   login: "",
@@ -26,8 +28,10 @@ export default function RegistrationScreen({ navigation }) {
   const [isFocused3, setIsFocused3] = useState(false);
   const [hidePassword, setHidePassword] = useState(true);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
-  const [state, setstate] = useState(initialState);
+  const [state, setState] = useState(initialState);
   const [dimensions, setDimensions] = useState(Dimensions.get("window").width);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const onChange = () => {
@@ -41,14 +45,14 @@ export default function RegistrationScreen({ navigation }) {
     };
   }, []);
 
-  const keyboardHide = () => {
+  const hanldeSubmit = () => {
     setIsShowKeyboard(false);
     Keyboard.dismiss();
-    console.log(state);
-    setstate(initialState);
+    dispatch(authSignUpUser(state));
+    setState(initialState);
   };
 
-  const keyboardHide2 = () => {
+  const keyboardHide = () => {
     setIsShowKeyboard(false);
     Keyboard.dismiss();
   };
@@ -85,7 +89,7 @@ export default function RegistrationScreen({ navigation }) {
   };
 
   return (
-    <TouchableWithoutFeedback onPress={keyboardHide2}>
+    <TouchableWithoutFeedback onPress={keyboardHide}>
       <View style={styles.container}>
         <ImageBackground
           style={styles.image}
@@ -125,7 +129,7 @@ export default function RegistrationScreen({ navigation }) {
                   onBlur={handleBlur}
                   value={state.login}
                   onChangeText={(value) =>
-                    setstate((prevState) => ({ ...prevState, login: value }))
+                    setState((prevState) => ({ ...prevState, login: value }))
                   }
                 />
               </View>
@@ -137,7 +141,7 @@ export default function RegistrationScreen({ navigation }) {
                   onBlur={handleBlur2}
                   value={state.email}
                   onChangeText={(value) =>
-                    setstate((prevState) => ({ ...prevState, email: value }))
+                    setState((prevState) => ({ ...prevState, email: value }))
                   }
                 />
               </View>
@@ -150,7 +154,7 @@ export default function RegistrationScreen({ navigation }) {
                   onBlur={handleBlur3}
                   value={state.password}
                   onChangeText={(value) =>
-                    setstate((prevState) => ({ ...prevState, password: value }))
+                    setState((prevState) => ({ ...prevState, password: value }))
                   }
                 />
                 <TouchableOpacity onPress={togglePasswordVisibility}>
@@ -165,7 +169,7 @@ export default function RegistrationScreen({ navigation }) {
               <TouchableOpacity
                 activeOpacity={0.6}
                 style={styles.btn}
-                onPress={keyboardHide}
+                onPress={hanldeSubmit}
               >
                 <Text style={styles.btnTitle}>Register</Text>
               </TouchableOpacity>

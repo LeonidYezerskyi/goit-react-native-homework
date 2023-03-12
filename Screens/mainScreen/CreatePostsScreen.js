@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import {
   Text,
   View,
@@ -10,11 +11,19 @@ import {
 } from "react-native";
 import { Camera } from "expo-camera";
 import * as Location from "expo-location";
+import app from "../../config/firebase";
+import { ref, uploadBytes, getStorage, getDownloadURL } from "firebase/storage";
+import { getFirestore, collection, addDoc } from "firebase/firestore";
+
+const storage = getStorage(app);
+const db = getFirestore(app);
 
 const CreatePostsScreen = ({ navigation }) => {
   const [camera, setCamera] = useState(null);
   const [photo, setPhoto] = useState(null);
   const [location, setLocation] = useState(null);
+  const [name, setName] = useState("");
+  const { userId, login } = useSelector((state) => state.auth);
 
   useEffect(() => {
     (async () => {
@@ -47,7 +56,37 @@ const CreatePostsScreen = ({ navigation }) => {
 
   const publishPost = () => {
     getLocation();
+    uploadPostToServer();
     navigation.navigate("DefaultScreen", { photo, location });
+  };
+
+  const uploadPhotoToServer = async () => {
+    const response = await fetch(photo);
+    const file = await response.blob();
+    const uniquePostId = Date.now().toString();
+    const storageRef = ref(storage, `postImage/${uniquePostId}`);
+    await uploadBytes(storageRef, file);
+    await getDownloadURL(storageRef).then((url) => {
+      photoUrl = url;
+    });
+    return photoUrl;
+  };
+
+  const uploadPostToServer = async () => {
+    const photo = await uploadPhotoToServer();
+    try {
+      await addDoc(collection(db, "posts"), {
+        photo: photo,
+        name: name,
+        location: location,
+        userId: userId,
+        login: login,
+      }).then(() => {
+        console.log("Uploaded!");
+      });
+    } catch (e) {
+      console.error("Some error happened", e);
+    }
   };
 
   return (
@@ -82,7 +121,11 @@ const CreatePostsScreen = ({ navigation }) => {
       </View>
       <View style={styles.form}>
         <View>
-          <TextInput placeholder="Name..." style={styles.input} />
+          <TextInput
+            placeholder="Name..."
+            onChangeText={setName}
+            style={styles.input}
+          />
         </View>
         <View>
           <TextInput

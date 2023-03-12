@@ -1,4 +1,5 @@
 import React from "react";
+import { useDispatch } from "react-redux";
 import {
   ImageBackground,
   View,
@@ -8,10 +9,17 @@ import {
   Text,
   ScrollView,
 } from "react-native";
+import { authSignOutUser } from "../../redux/auth/authOperations";
 
 import { MaterialIcons, EvilIcons, AntDesign } from "@expo/vector-icons";
 
 const ProfileScreen = ({ navigation }) => {
+  const dispatch = useDispatch();
+
+  const signOut = () => {
+    dispatch(authSignOutUser());
+  };
+
   return (
     <View style={styles.container}>
       <ImageBackground
@@ -34,7 +42,7 @@ const ProfileScreen = ({ navigation }) => {
               />
             </TouchableOpacity>
           </View>
-          <TouchableOpacity activeOpacity={0.7} onPress={() => {}}>
+          <TouchableOpacity activeOpacity={0.7} onPress={signOut}>
             <View style={styles.logoutBtn}>
               <MaterialIcons name="logout" size={24} color="#BDBDBD" />
             </View>
