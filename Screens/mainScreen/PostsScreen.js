@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import { createStackNavigator } from "@react-navigation/stack";
-import DefaultScreenPosts from "../nestedScreens/DefaultScreenPosts";
+import DefaultPostsScreen from "../nestedScreens/DefaultPostsScreen";
 import CommentsScreen from "../nestedScreens/CommentsScreen";
 import MapScreen from "../nestedScreens/MapScreen";
 import { TouchableOpacity, View } from "react-native";
@@ -36,7 +36,7 @@ const PostsScreen = () => {
             </TouchableOpacity>
           ),
         }}
-        component={DefaultScreenPosts}
+        component={DefaultPostsScreen}
       />
       <NestedScreen.Screen
         options={{

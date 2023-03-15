@@ -7,32 +7,51 @@ import {
   TouchableOpacity,
   FlatList,
 } from "react-native";
+import { useSelector } from "react-redux";
+import {
+  getFirestore,
+  collection,
+  query,
+  onSnapshot,
+  orderBy,
+} from "firebase/firestore";
+import app from "../../config/firebase";
+const db = getFirestore(app);
 import { EvilIcons } from "@expo/vector-icons";
 
-const DefaultPostsScreen = ({ navigation, route }) => {
+const DefaultPostsScreen = ({ navigation }) => {
   const [posts, setPosts] = useState([]);
+  console.log(posts);
+  const { login, email, avatar } = useSelector((state) => state.auth);
+  console.log({ login, email, avatar });
 
   useEffect(() => {
-    if (route.params) {
-      setPosts((prevState) => [...prevState, route.params]);
-    }
-  }, [route.params]);
+    const q = query(collection(db, "posts"), orderBy("date", "desc"));
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const allPosts = [];
+      querySnapshot.forEach((doc) => {
+        allPosts.push({ ...doc.data(), id: doc.id });
+      });
+      setPosts(allPosts);
+      console.log(allPosts);
+    });
+    return () => {
+      unsubscribe();
+    };
+  }, []);
 
   return (
     <View style={styles.container}>
       <View style={styles.userWrapper}>
-        <Image
-          style={{ width: 60, height: 60 }}
-          source={require("../../assets/images/user.jpg")}
-        />
+        <Image style={{ width: 60, height: 60 }} source={{ uri: avatar }} />
         <View style={styles.userInfo}>
-          <Text style={styles.userName}>Natali Romanova</Text>
-          <Text style={styles.userEmail}>email@example.com</Text>
+          <Text style={styles.userName}>{login}</Text>
+          <Text style={styles.userEmail}>{email}</Text>
         </View>
       </View>
       <FlatList
         data={posts}
-        keyExtractor={(item, indx) => indx.toString()}
+        keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View>
             <View style={styles.postsWrapper}>
@@ -43,12 +62,17 @@ const DefaultPostsScreen = ({ navigation, route }) => {
                 />
               </View>
               <View style={styles.postMainInfo}>
-                <Text style={styles.postName}>Forest</Text>
+                <Text style={styles.postName}>{item.title}</Text>
                 <View style={styles.postInfo}>
                   <View style={{ flexDirection: "row", marginLeft: -7 }}>
                     <TouchableOpacity
                       activeOpacity={0.4}
-                      onPress={() => navigation.navigate("Comments")}
+                      onPress={() =>
+                        navigation.navigate("Comments", {
+                          photo,
+                          postId: item.id,
+                        })
+                      }
                     >
                       <EvilIcons name="comment" size={24} color="#BDBDBD" />
                     </TouchableOpacity>
@@ -57,13 +81,13 @@ const DefaultPostsScreen = ({ navigation, route }) => {
                   <View style={{ flexDirection: "row" }}>
                     <TouchableOpacity
                       activeOpacity={0.4}
-                      onPress={() => navigation.navigate("Map")}
+                      onPress={() =>
+                        navigation.navigate("Map", { location: item.location })
+                      }
                     >
                       <EvilIcons name="location" size={24} color="#BDBDBD" />
                     </TouchableOpacity>
-                    <Text style={styles.postLocation}>
-                      Ivano-Frankivs'k Region, Ukraine
-                    </Text>
+                    <Text style={styles.postLocation}>{country}</Text>
                   </View>
                 </View>
               </View>

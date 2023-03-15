@@ -1,5 +1,5 @@
-import React from "react";
-import { useDispatch } from "react-redux";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   ImageBackground,
   View,
@@ -10,11 +10,38 @@ import {
   ScrollView,
 } from "react-native";
 import { authSignOutUser } from "../../redux/auth/authOperations";
-
 import { MaterialIcons, EvilIcons, AntDesign } from "@expo/vector-icons";
+import {
+  getFirestore,
+  onSnapshot,
+  collection,
+  query,
+} from "firebase/firestore";
+import app from "../../config/firebase";
+const db = getFirestore(app);
 
 const ProfileScreen = ({ navigation }) => {
+  const [photo, setPhoto] = useState(null);
+  const [posts, setPosts] = useState([]);
+
+  const { login, avatar, userId } = useSelector((state) => state.auth);
+
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    setPhoto(avatar);
+    const q = query(collection(db, "posts"));
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const posts = [];
+      querySnapshot.forEach((doc) => {
+        posts.push({ ...doc.data(), id: doc.id });
+      });
+      setPosts(posts);
+    });
+    return () => {
+      unsubscribe();
+    };
+  }, []);
 
   const signOut = () => {
     dispatch(authSignOutUser());

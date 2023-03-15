@@ -23,6 +23,9 @@ const CreatePostsScreen = ({ navigation }) => {
   const [photo, setPhoto] = useState(null);
   const [location, setLocation] = useState(null);
   const [name, setName] = useState("");
+  const [address, setAddress] = useState(null);
+  const [country, setCountry] = useState(null);
+
   const { userId, login } = useSelector((state) => state.auth);
 
   useEffect(() => {
@@ -38,26 +41,35 @@ const CreatePostsScreen = ({ navigation }) => {
         Alert.alert("Permission to access camera was denied");
       }
     })();
+    getLocation();
   }, []);
 
   const takePhoto = async () => {
-    const photo = await camera.takePictureAsync();
-    setPhoto(photo.uri);
+    try {
+      const photo = await camera.takePictureAsync();
+      setPhoto(photo.uri);
+      getAddress();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const getLocation = async () => {
     const location = await Location.getCurrentPositionAsync();
-    const coords = {
-      latitude: location.coords.latitude,
-      longitude: location.coords.longitude,
-    };
-    setLocation(coords);
+    setLocation(location);
   };
 
-  const publishPost = () => {
-    getLocation();
-    uploadPostToServer();
-    navigation.navigate("DefaultScreen", { photo, location });
+  const getAddress = async () => {
+    try {
+      const address = await Location.reverseGeocodeAsync({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      });
+      setAddress(`${address[0].city}, ${address[0].country}`);
+      setCountry(address[0].country);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const uploadPhotoToServer = async () => {
@@ -72,6 +84,13 @@ const CreatePostsScreen = ({ navigation }) => {
     return photoUrl;
   };
 
+  const resetFunction = () => {
+    setPhoto(null);
+    setName("");
+    setAddress(null);
+    setCountry(null);
+  };
+
   const uploadPostToServer = async () => {
     const photo = await uploadPhotoToServer();
     try {
@@ -79,14 +98,22 @@ const CreatePostsScreen = ({ navigation }) => {
         photo: photo,
         name: name,
         location: location,
+        address: address,
         userId: userId,
         login: login,
+        country: country,
       }).then(() => {
         console.log("Uploaded!");
       });
     } catch (e) {
-      console.error("Some error happened", e);
+      Alert.alert("Some error happened");
     }
+  };
+
+  const publishPost = () => {
+    uploadPostToServer();
+    navigation.navigate("DefaultScreen");
+    resetFunction();
   };
 
   return (
@@ -123,13 +150,16 @@ const CreatePostsScreen = ({ navigation }) => {
         <View>
           <TextInput
             placeholder="Name..."
-            onChangeText={setName}
+            value={name}
+            onChangeText={(text) => setName(text)}
             style={styles.input}
           />
         </View>
         <View>
           <TextInput
-            placeholder="Location"
+            placeholder="Location..."
+            value={country}
+            onChangeText={(text) => setCountry(text)}
             style={[styles.input, styles.input2]}
           />
           <Image

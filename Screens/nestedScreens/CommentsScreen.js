@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import { Ionicons } from "@expo/vector-icons";
 import {
   View,
@@ -8,70 +9,128 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   SafeAreaView,
+  TextInput,
+  Dimensions,
+  TouchableWithoutFeedback,
+  FlatList,
 } from "react-native";
-import { TextInput } from "react-native-gesture-handler";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  doc,
+  query,
+  onSnapshot,
+} from "firebase/firestore";
+import app from "../../config/firebase";
+const db = getFirestore(app);
 
-const CommentsScreen = () => {
+const CommentsScreen = ({ route }) => {
+  const { postiId } = route.params;
+  const { avatar, login } = useSelector((state) => state.auth);
+  const [comment, setComment] = useState("");
+  const [comments, setComments] = useState([]);
+  const { postId } = route.params;
+  const [isShowKeyboard, setIsShowKeyboard] = useState(false);
+  const [dimensions, setDimensions] = useState(
+    Dimensions.get("window").width - 20 * 2
+  );
+
+  useEffect(() => {
+    getAllComments();
+    const onChange = () => {
+      const width = Dimensions.get("window").width - 20 * 2;
+      setDimensions(width);
+    };
+    Dimensions.addEventListener("change", onChange);
+  }, []);
+
+  const getAllComments = async () => {
+    const postRef = doc(db, "posts", postiId);
+    const q = query(collection(postRef, "comments"));
+    onSnapshot(q, (querySnapshot) => {
+      const comments = [];
+      querySnapshot.forEach((doc) => {
+        comments.push(doc.data());
+      });
+      setComments(comments);
+    });
+  };
+
+  const createComment = async () => {
+    const postRef = doc(db, "posts", postId);
+    await addDoc(collection(postRef, "comments"), {
+      login: login,
+      comment: comment,
+    });
+    setIsShowKeyboard(false);
+    Keyboard.dismiss();
+    setComment("");
+  };
+
+  const keyboardHide = () => {
+    setIsShowKeyboard(false);
+    Keyboard.dismiss();
+  };
+
   return (
-    <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS == "ios" ? "padding" : "height"}
-        style={{ flex: 1 }}
-      >
-        <View style={{ alignItems: "center" }}>
-          <Image
-            style={styles.image}
-            source={require("../../assets/images/forest.jpg")}
+    <TouchableWithoutFeedback onPress={keyboardHide}>
+      <SafeAreaView style={styles.container}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS == "ios" ? "padding" : "height"}
+          style={{ flex: 1 }}
+        >
+          {/* <View style={{ alignItems: "center" }}>
+            <Image
+              style={styles.image}
+              source={require("../../assets/images/forest.jpg")}
+            />
+          </View> */}
+
+          <FlatList
+            data={comments}
+            renderItem={({ item }) => (
+              <View style={styles.commentsWrapper}>
+                <View style={styles.userComment}>
+                  <Image style={styles.userImage} source={item.avatar} />
+                  <View style={styles.commentContent}>
+                    <Text style={styles.commentText}>{item.comment}</Text>
+                    <Text style={styles.commentDate}>
+                      09 june, 2020 | 09:14
+                    </Text>
+                  </View>
+                </View>
+              </View>
+            )}
+            keyExtractor={(item, indx) => indx.toString()}
           />
-        </View>
-        <View style={styles.commentsWrapper}>
-          <View style={styles.userComment}>
-            <Image
-              style={styles.userImage}
-              source={require("../../assets/images/userPhotoComment.jpg")}
-            />
-            <View style={styles.commentContent}>
-              <Text style={styles.commentText}>
-                A fast 50mm like f1.8 would help with the bokeh. I’ve been using
-                primes as they tend to get a bit sharper images.
-              </Text>
-              <Text style={styles.commentDate}>09 june, 2020 | 09:14</Text>
-            </View>
-          </View>
-          <View style={styles.userComment}>
-            <View style={[styles.commentContent, styles.commentContentAnswer]}>
-              <Text style={styles.commentText}>
-                A fast 50mm like f1.8 would help with the bokeh. I’ve been using
-                primes as they tend to get a bit sharper images.
-              </Text>
-              <Text style={styles.commentDate}>09 june, 2020 | 09:14</Text>
-            </View>
-            <Image
-              style={styles.userImage}
-              source={require("../../assets/images/userPhotoComment2.jpg")}
+          <View>
+            <TextInput
+              style={{
+                ...styles.input,
+                width: dimensions,
+                marginBottom: isShowKeyboard ? 40 : 0,
+              }}
+              placeholder="Enter comment..."
+              onFocus={() => setIsShowKeyboard(true)}
+              value={comment}
+              onChangeText={(value) => setComment(value)}
             />
           </View>
-          <View style={styles.userComment}>
-            <Image
-              style={styles.userImage}
-              source={require("../../assets/images/userPhotoComment.jpg")}
+          <TouchableOpacity
+            onPress={createComment}
+            activeOpacity={0.6}
+            style={styles.btnComment}
+          >
+            <Ionicons
+              name="md-arrow-up-circle-sharp"
+              size={34}
+              color="#FF6C00"
             />
-            <View style={styles.commentContent}>
-              <Text style={styles.commentText}>
-                Thank you! That was very helpful!
-              </Text>
-              <Text style={styles.commentDate}>09 june, 2020 | 09:14</Text>
-            </View>
-          </View>
-        </View>
-        <View>
-          <TextInput placeholder="Comment..." style={styles.input} />
-        </View>
-        <TouchableOpacity activeOpacity={0.6} style={styles.btnComment}>
-          <Ionicons name="md-arrow-up-circle-sharp" size={34} color="#FF6C00" />
-        </TouchableOpacity>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+          </TouchableOpacity>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </TouchableWithoutFeedback>
   );
 };
 

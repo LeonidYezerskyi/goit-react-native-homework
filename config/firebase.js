@@ -1,13 +1,13 @@
 import { initializeApp } from "firebase/app";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDWZXxCSzKs1RY4uYJXCB6fHbhTOrIxMno",
-  authDomain: "react-native-photomap.firebaseapp.com",
-  projectId: "react-native-photomap",
-  storageBucket: "react-native-photomap.appspot.com",
-  messagingSenderId: "1027380065533",
-  appId: "1:1027380065533:web:86325ab00159d9f3f87a94",
-  measurementId: "G-8SLRDGSB8L",
+  apiKey: "AIzaSyA7E0xrBRxPeyRECW28FJs3egydzbmErgY",
+  authDomain: "react-native-photomap-d405e.firebaseapp.com",
+  projectId: "react-native-photomap-d405e",
+  storageBucket: "react-native-photomap-d405e.appspot.com",
+  messagingSenderId: "562968284746",
+  appId: "1:562968284746:web:b0604f287b10ac38f7e0b3",
+  measurementId: "G-ST8YQ19N86",
 };
 
 const app = initializeApp(firebaseConfig);
