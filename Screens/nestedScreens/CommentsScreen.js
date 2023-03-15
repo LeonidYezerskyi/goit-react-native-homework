@@ -8,6 +8,7 @@ import {
   Text,
   TouchableOpacity,
   KeyboardAvoidingView,
+  Keyboard,
   SafeAreaView,
   TextInput,
   Dimensions,
@@ -26,27 +27,30 @@ import app from "../../config/firebase";
 const db = getFirestore(app);
 
 const CommentsScreen = ({ route }) => {
-  const { postiId } = route.params;
-  const { avatar, login } = useSelector((state) => state.auth);
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState([]);
-  const { postId } = route.params;
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [dimensions, setDimensions] = useState(
     Dimensions.get("window").width - 20 * 2
   );
 
+  const { postId, photo } = route.params;
+  const { login } = useSelector((state) => state.auth);
+
   useEffect(() => {
     getAllComments();
     const onChange = () => {
-      const width = Dimensions.get("window").width - 20 * 2;
+      const width = Dimensions.get("window").width;
+
       setDimensions(width);
     };
-    Dimensions.addEventListener("change", onChange);
+    const listener = Dimensions.addEventListener("change", onChange);
+    return () => {
+      listener.remove();
+    };
   }, []);
-
   const getAllComments = async () => {
-    const postRef = doc(db, "posts", postiId);
+    const postRef = doc(db, "posts", postId);
     const q = query(collection(postRef, "comments"));
     onSnapshot(q, (querySnapshot) => {
       const comments = [];
@@ -60,8 +64,8 @@ const CommentsScreen = ({ route }) => {
   const createComment = async () => {
     const postRef = doc(db, "posts", postId);
     await addDoc(collection(postRef, "comments"), {
-      login: login,
-      comment: comment,
+      login,
+      comment,
     });
     setIsShowKeyboard(false);
     Keyboard.dismiss();
@@ -77,22 +81,22 @@ const CommentsScreen = ({ route }) => {
     <TouchableWithoutFeedback onPress={keyboardHide}>
       <SafeAreaView style={styles.container}>
         <KeyboardAvoidingView
-          behavior={Platform.OS == "ios" ? "padding" : "height"}
+          behavior={Platform.OS == "ios" ? "padding" : ""}
           style={{ flex: 1 }}
         >
-          {/* <View style={{ alignItems: "center" }}>
-            <Image
-              style={styles.image}
-              source={require("../../assets/images/forest.jpg")}
-            />
-          </View> */}
+          <View style={{ alignItems: "center", marginBottom: 32 }}>
+            <Image style={styles.image} source={{ uri: photo }} />
+          </View>
 
           <FlatList
             data={comments}
             renderItem={({ item }) => (
               <View style={styles.commentsWrapper}>
                 <View style={styles.userComment}>
-                  <Image style={styles.userImage} source={item.avatar} />
+                  <Image
+                    style={styles.userImage}
+                    source={require("../../assets/images/userPhotoComment.jpg")}
+                  />
                   <View style={styles.commentContent}>
                     <Text style={styles.commentText}>{item.comment}</Text>
                     <Text style={styles.commentDate}>
@@ -104,7 +108,7 @@ const CommentsScreen = ({ route }) => {
             )}
             keyExtractor={(item, indx) => indx.toString()}
           />
-          <View>
+          <View style={styles.inputWrapper}>
             <TextInput
               style={{
                 ...styles.input,
@@ -114,20 +118,20 @@ const CommentsScreen = ({ route }) => {
               placeholder="Enter comment..."
               onFocus={() => setIsShowKeyboard(true)}
               value={comment}
-              onChangeText={(value) => setComment(value)}
+              onChangeText={(text) => setComment(text)}
             />
+            <TouchableOpacity
+              onPress={createComment}
+              activeOpacity={0.6}
+              style={styles.btnComment}
+            >
+              <Ionicons
+                name="md-arrow-up-circle-sharp"
+                size={34}
+                color="#FF6C00"
+              />
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity
-            onPress={createComment}
-            activeOpacity={0.6}
-            style={styles.btnComment}
-          >
-            <Ionicons
-              name="md-arrow-up-circle-sharp"
-              size={34}
-              color="#FF6C00"
-            />
-          </TouchableOpacity>
         </KeyboardAvoidingView>
       </SafeAreaView>
     </TouchableWithoutFeedback>
@@ -151,7 +155,6 @@ const styles = StyleSheet.create({
   commentsWrapper: {
     alignItems: "center",
     marginHorizontal: 38,
-    marginTop: 32,
   },
   userComment: {
     flexDirection: "row",
@@ -191,6 +194,13 @@ const styles = StyleSheet.create({
     marginRight: 16,
     marginBottom: 16,
   },
+
+  inputWrapper: {
+    flexDirection: "row",
+    marginBottom: 16,
+    marginTop: 24,
+  },
+
   input: {
     borderWidth: 1,
     borderColor: "#E8E8E8",
@@ -200,7 +210,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 24,
     marginTop: 7,
     paddingLeft: 16,
-    textAlign: "left",
     fontSize: 16,
     lineHeight: 19,
     color: "#BDBDBD",
@@ -208,8 +217,8 @@ const styles = StyleSheet.create({
   },
   btnComment: {
     position: "absolute",
-    bottom: 55,
-    right: 30,
+    top: 13,
+    right: 20,
   },
 });
 

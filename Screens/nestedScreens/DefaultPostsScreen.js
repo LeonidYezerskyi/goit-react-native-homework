@@ -13,7 +13,6 @@ import {
   collection,
   query,
   onSnapshot,
-  orderBy,
 } from "firebase/firestore";
 import app from "../../config/firebase";
 const db = getFirestore(app);
@@ -21,19 +20,16 @@ import { EvilIcons } from "@expo/vector-icons";
 
 const DefaultPostsScreen = ({ navigation }) => {
   const [posts, setPosts] = useState([]);
-  console.log(posts);
-  const { login, email, avatar } = useSelector((state) => state.auth);
-  console.log({ login, email, avatar });
+  const { login, email } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    const q = query(collection(db, "posts"), orderBy("date", "desc"));
+    const q = query(collection(db, "posts"));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const allPosts = [];
       querySnapshot.forEach((doc) => {
         allPosts.push({ ...doc.data(), id: doc.id });
       });
       setPosts(allPosts);
-      console.log(allPosts);
     });
     return () => {
       unsubscribe();
@@ -43,10 +39,13 @@ const DefaultPostsScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.userWrapper}>
-        <Image style={{ width: 60, height: 60 }} source={{ uri: avatar }} />
+        <Image
+          style={{ width: 60, height: 60 }}
+          source={require("../../assets/images/user.jpg")}
+        />
         <View style={styles.userInfo}>
-          <Text style={styles.userName}>{login}</Text>
-          <Text style={styles.userEmail}>{email}</Text>
+          <Text style={styles.userName}>Here should be login {login}</Text>
+          <Text style={styles.userEmail}>Here should be email {email}</Text>
         </View>
       </View>
       <FlatList
@@ -62,14 +61,14 @@ const DefaultPostsScreen = ({ navigation }) => {
                 />
               </View>
               <View style={styles.postMainInfo}>
-                <Text style={styles.postName}>{item.title}</Text>
+                <Text style={styles.postName}>{item.name}</Text>
                 <View style={styles.postInfo}>
                   <View style={{ flexDirection: "row", marginLeft: -7 }}>
                     <TouchableOpacity
                       activeOpacity={0.4}
                       onPress={() =>
                         navigation.navigate("Comments", {
-                          photo,
+                          photo: item.photo,
                           postId: item.id,
                         })
                       }
@@ -87,7 +86,7 @@ const DefaultPostsScreen = ({ navigation }) => {
                     >
                       <EvilIcons name="location" size={24} color="#BDBDBD" />
                     </TouchableOpacity>
-                    <Text style={styles.postLocation}>{country}</Text>
+                    <Text style={styles.postLocation}>{item.country}</Text>
                   </View>
                 </View>
               </View>
@@ -127,11 +126,12 @@ const styles = StyleSheet.create({
   postsWrapper: {
     marginHorizontal: 32,
     marginTop: 32,
-    alignItems: "center",
   },
+
   postInfo: {
     flexDirection: "row",
-    marginHorizontal: 32,
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   commentsNumber: {
     marginRight: 50,
@@ -145,7 +145,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 19,
     color: "#212121",
-    marginLeft: 28,
     marginTop: 8,
     marginBottom: 8,
   },

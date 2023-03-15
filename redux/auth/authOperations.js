@@ -35,8 +35,8 @@ export const authSignUpUser =
 
       dispatch(updateUserProfile(userUpdateProfile));
     } catch (error) {
-      console.log("error", error);
-      console.log("error.message", error.message);
+      console.log(error);
+      console.log(error.message);
     }
   };
 
@@ -45,10 +45,9 @@ export const authSignInUser =
   async (dispatch, getState) => {
     try {
       const user = await signInWithEmailAndPassword(auth, email, password);
-      console.log("user", user);
     } catch (error) {
-      console.log("error", error);
-      console.log("error.message", error.message);
+      console.log(error);
+      console.log(error.message);
     }
   };
 export const authSignOutUser = () => async (dispatch, getState) => {
